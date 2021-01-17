@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useApolloClient } from "@apollo/client";
 import { EDIT_AUTHOR, ALL_AUTHORS } from "../queries";
 
 const SetBirthyear = props => {
@@ -9,6 +9,9 @@ const SetBirthyear = props => {
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
+
+  const client = useApolloClient();
+  const { allAuthors } = client.readQuery({ query: ALL_AUTHORS }) || []
 
   const handleSubmit = async event => {
     event.preventDefault()
@@ -27,8 +30,9 @@ const SetBirthyear = props => {
       <h2>Set birthyear</h2>
       <form onSubmit={e => handleSubmit(e)}>
         <div>
-          name
-          <input value={name} onChange={({ target }) => setName(target.value.trim())} />
+          <select value={name} onChange={({target}) => setName(target.value)}>
+            {allAuthors.map(author => <option value={author.name} key={author.name}>{ author.name }</option>)}
+          </select>
         </div>
         <div>
           born
