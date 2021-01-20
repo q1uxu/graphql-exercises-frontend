@@ -11,7 +11,7 @@ const SetBirthyear = props => {
   })
 
   const client = useApolloClient();
-  const { allAuthors } = client.readQuery({ query: ALL_AUTHORS }) || []
+  const { allAuthors = [] } = client.readQuery({ query: ALL_AUTHORS })
 
   const handleSubmit = async event => {
     event.preventDefault()
@@ -31,7 +31,9 @@ const SetBirthyear = props => {
       <form onSubmit={e => handleSubmit(e)}>
         <div>
           <select value={name} onChange={({target}) => setName(target.value)}>
-            {allAuthors.map(author => <option value={author.name} key={author.name}>{ author.name }</option>)}
+            {allAuthors.map(author =>
+              <option value={author.name} key={author.name}>{author.name}</option>
+            )}
           </select>
         </div>
         <div>
