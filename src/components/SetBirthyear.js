@@ -11,7 +11,8 @@ const SetBirthyear = props => {
   })
 
   const client = useApolloClient();
-  const { allAuthors = [] } = client.readQuery({ query: ALL_AUTHORS })
+  const dataInStore = client.readQuery({ query: ALL_AUTHORS })
+  const allAuthors = dataInStore.allAuthors || [];
 
   const handleSubmit = async event => {
     event.preventDefault()
