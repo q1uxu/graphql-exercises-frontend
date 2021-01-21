@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { useApolloClient } from '@apollo/client'
+import { useApolloClient, useLazyQuery } from '@apollo/client'
+import { ME } from './queries' 
 import Notify from './components/Notify'
 import LoginForm from './components/LoginForm'
 import Authors from './components/Authors'
@@ -13,13 +14,16 @@ const App = () => {
   const [token, setToken] = useState(null)
   
   const client = useApolloClient()
+  const [getMe, result] = useLazyQuery(ME)
+  const favoriteGenre = result?.data?.me?.favoriteGenre ?? null
   
   useEffect(() => {
     const token = localStorage.getItem('user-token')
     if ( token ) {
       setToken(token)
+      getMe()
     }
-  }, [])
+  }, []) // eslint-disable-line
 
   const logout = () => {
     setToken(null)
@@ -50,9 +54,8 @@ const App = () => {
       <Authors show={page === 'authors'} notify={notify} />
       <Books show={page === 'books'} notify={notify} />
       <NewBook show={page === 'add'} notify={notify} />
-      <Recommend show={page === 'recommend'} />
-      <LoginForm show={page === 'login'} notify={notify} setToken={setToken} setPage={setPage}/>
-
+      <Recommend show={page === 'recommend'} favoriteGenre={favoriteGenre}/>
+      <LoginForm show={page === 'login'} notify={notify} setToken={setToken} setPage={setPage} getMe={getMe}/>
     </div>
   )
 }
